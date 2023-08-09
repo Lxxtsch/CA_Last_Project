@@ -19,6 +19,8 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserConverter userConverter;
+    private final FitnessGoalService fitnessGoalService;
+    private final HealthDataService healthDataService;
 
 
     public UserDTO createUser(UserDTO userDTO) {
@@ -54,6 +56,9 @@ public class UserService {
     }
 
     public void deleteUserById(Long id) {
+        healthDataService.deleteHealthDataByUserId(id);
+        fitnessGoalService.deleteFitnessGoalsByUserId(id);
+
         userRepository.deleteById(id);
     }
 }

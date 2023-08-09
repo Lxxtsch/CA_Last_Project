@@ -69,4 +69,12 @@ public class FitnessGoalService {
         List<FitnessGoalEntity> fitnessGoals = fitnessGoalRepository.findByUserId(userId);
         return fitnessGoalConverter.toDtoList(fitnessGoals);
     }
+
+    public void deleteFitnessGoalsByUserId(Long userId) {
+        List<FitnessGoalDTO> fitnessGoals = getFitnessGoalsByUserId(userId);
+
+        for (FitnessGoalDTO fitnessGoal : fitnessGoals) {
+            fitnessGoalRepository.deleteById(fitnessGoal.getId());
+        }
+    }
 }

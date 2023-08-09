@@ -5,6 +5,7 @@ import lt.codeacademy.lastproject.services.FitnessGoalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,6 +44,19 @@ public class FitnessGoalController {
         }
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<FitnessGoalDTO>> getFitnessGoalsByUserId(@PathVariable Long userId) {
+        try {
+            List<FitnessGoalDTO> fitnessGoalList = fitnessGoalService.getFitnessGoalsByUserId(userId);
+            if (!fitnessGoalList.isEmpty()) {
+                return new ResponseEntity<>(fitnessGoalList, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (NoSuchElementException | NullPointerException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 
     @PutMapping("/{fitnessGoalId}")
     public ResponseEntity<FitnessGoalDTO> updateFitnessGoalById(@PathVariable Long fitnessGoalId,
@@ -56,18 +70,23 @@ public class FitnessGoalController {
     }
 
     @DeleteMapping("/{fitnessGoalId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteFitnessGoalById(@PathVariable Long fitnessGoalId) {
         try {
             fitnessGoalService.deleteFitnessGoalById(fitnessGoalId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<FitnessGoalDTO>> getFitnessGoalsByUserId(@PathVariable Long userId) {
-        List<FitnessGoalDTO> fitnessGoalList = fitnessGoalService.getFitnessGoalsByUserId(userId);
-        return new ResponseEntity<>(fitnessGoalList, HttpStatus.OK);
+
+    @DeleteMapping("/user/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteFitnessGoalsByUserId(@PathVariable Long userId) {
+        fitnessGoalService.deleteFitnessGoalsByUserId(userId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
 }

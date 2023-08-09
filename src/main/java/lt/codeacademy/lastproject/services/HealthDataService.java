@@ -69,4 +69,13 @@ public class HealthDataService {
         List<HealthDataEntity> healthDataList = healthDataRepository.findByUserId(userId);
         return healthDataConverter.toDtoList(healthDataList);
     }
+
+    public void deleteHealthDataByUserId(Long userId) {
+        List<HealthDataDTO> healthDataList = getHealthDataByUserId(userId);
+
+        for (HealthDataDTO healthData : healthDataList) {
+            healthDataRepository.deleteById(healthData.getId());
+        }
+    }
+
 }
