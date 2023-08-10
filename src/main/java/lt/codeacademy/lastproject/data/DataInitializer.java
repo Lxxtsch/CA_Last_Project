@@ -1,5 +1,4 @@
 /*
-
 package lt.codeacademy.lastproject.data;
 
 import lt.codeacademy.lastproject.entities.FitnessGoalEntity;
